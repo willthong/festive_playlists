@@ -1,0 +1,28 @@
+name: De-festive run
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Preview without changing Spotify"
+        type: boolean
+        default: false
+
+jobs:
+  de-festive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          python-version: "3.15"
+      - run: uv sync --frozen
+      - name: Run de-festive pipeline
+        run: |
+          uv run python -m festive_playlists de-festive \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          SPOTIFY_CHRISTMAS_PLAYLIST_ID: ${{ secrets.SPOTIFY_CHRISTMAS_PLAYLIST_ID }}

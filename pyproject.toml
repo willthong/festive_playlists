@@ -1,0 +1,28 @@
+[project]
+name = "festive-playlists"
+version = "0.1.0"
+description = "Automates a Spotify Christmas routine."
+requires-python = ">=3.15"
+dependencies = [
+    "spotipy",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "ty",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/festive_playlists"]
+
+[tool.ruff]
+line-length = 90
+
+[tool.ty.src]
+include = ["src"]
