@@ -58,6 +58,24 @@ To do it by hand:
 The refresh token stays valid while the app is used. Re-run the flow if it is
 revoked.
 
+### From your phone
+
+A browser callback page is published at:
+
+```text
+https://willthong.github.io/festive_playlists/oauth.html
+```
+
+1. Add that exact URL as a Redirect URI in your Spotify app settings.
+2. Open it on your phone and paste your Client ID.
+3. Approve the Spotify consent screen.
+4. Copy the refresh token shown on the page.
+5. In GitHub, go to Settings → Secrets and variables → Actions and set
+   `SPOTIFY_REFRESH_TOKEN` to that value.
+
+The page uses PKCE and does not need your Client secret. It shows the token
+once and does not store it.
+
 ## Running
 
 Open the Actions tab and select **Festive run** or **De-festive run**, then
