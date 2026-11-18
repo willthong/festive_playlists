@@ -29,13 +29,31 @@ needed in CI. The token is never logged.
 
 ## Getting a refresh token
 
+The easiest path is the setup wizard. Run it from the repo root on your own
+machine:
+
+```sh
+./scripts/setup_spotify.sh
+```
+
+It opens the Spotify dashboard, captures your client ID and secret, runs the
+authorization flow, and stores all three secrets in GitHub Actions.
+
+To do it by hand:
+
 1. Create a Spotify app in the
    [developer dashboard](https://developer.spotify.com/dashboard).
 2. Add `http://127.0.0.1:8080/callback` as a redirect URI.
-3. Run the authorization-code flow once with these scopes:
-   `user-library-read user-library-modify playlist-read-private`
-   `playlist-modify-private`.
-4. Exchange the code for tokens and copy the `refresh_token`.
+3. Run the helper on your machine:
+
+   ```sh
+   SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=... \
+     python3 scripts/get_refresh_token.py --output /tmp/refresh_token
+   ```
+
+4. Store the token as the `SPOTIFY_REFRESH_TOKEN` secret. The helper opens the
+   consent page and catches the callback; the token is never printed when you
+   use `--output`.
 
 The refresh token stays valid while the app is used. Re-run the flow if it is
 revoked.
