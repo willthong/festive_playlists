@@ -15,7 +15,7 @@ from festive_playlists.playlists import (
 )
 
 LIKED_PAGE_SIZE = 50
-PLAYLIST_PAGE_SIZE = 100
+PLAYLIST_PAGE_SIZE = 50
 BACKUP_BATCH_SIZE = 100
 LIKE_BATCH_SIZE = 50
 
@@ -30,18 +30,40 @@ class FestivePlan:
     track_ids: list[str]
 
 
+def _page_track_ids(items: list[dict[str, Any]]) -> list[str]:
+    """Return the track ids on one page, tolerating the legacy ``track`` key.
+
+    Spotify's February 2026 Web API rename moved playlist entries from
+    ``item.track`` to ``item.item``; ``track`` is kept as a fallback.
+    """
+    track_ids: list[str] = []
+    for item in items:
+        track = item.get("item") or item.get("track") or {}
+        track_id = track.get("id")
+        if track_id:
+            track_ids.append(str(track_id))
+    return track_ids
+
+
 def _track_ids(fetch: PageFetcher, page_size: int) -> list[str]:
     """Collect every track id from a paginated Spotify collection."""
     track_ids: list[str] = []
     offset = 0
     while True:
         page = fetch(limit=page_size, offset=offset)
-        items = page.get("items") or []
-        for item in items:
-            track = item.get("track") or {}
-            track_id = track.get("id")
-            if track_id:
-                track_ids.append(str(track_id))
+        items = page.get("items")
+        if items is None:
+            raise ValueError(
+                "Spotify returned no items list; playlist contents are only "
+                "available for playlists you own or collaborate on"
+            )
+        page_ids = _page_track_ids(items)
+        if items and not page_ids:
+            raise ValueError(
+                "Spotify returned items with no track objects; expected "
+                "'item' (or legacy 'track') to hold an id"
+            )
+        track_ids.extend(page_ids)
         if not page.get("next") or not items:
             return track_ids
         offset += len(items)

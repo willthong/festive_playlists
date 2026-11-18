@@ -58,8 +58,7 @@ def find_or_create_backup(sp: spotipy.Spotify, today: date) -> str:
     for existing_name, playlist_id in _user_playlists(sp):
         if existing_name == name:
             return playlist_id
-    user_id = str(sp.me()["id"])
-    created = sp.user_playlist_create(user_id, name, public=False)
+    created = sp.current_user_playlist_create(name, public=False)
     return str(created["id"])
 
 

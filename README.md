@@ -99,7 +99,8 @@ uv run ty check
 
 - The Christmas playlist is matched by exact, case-insensitive name. Zero
   matches fail the run; one match is used; two or more require
-  `SPOTIFY_CHRISTMAS_PLAYLIST_ID`.
+  `SPOTIFY_CHRISTMAS_PLAYLIST_ID`. Spotify only returns playlist contents for
+  playlists you own or collaborate on, so a followed playlist fails the run.
 - The backup name uses the runner's local date. Re-running on the same day
   reuses the existing backup.
 - The de-festive run warns when it removes a pre-existing like: a track that

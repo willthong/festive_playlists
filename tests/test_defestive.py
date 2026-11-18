@@ -76,7 +76,7 @@ class FakeSpotify:
     ) -> dict[str, object]:
         ids = self._playlist_tracks.get(playlist_id)
         assert ids is not None, playlist_id
-        items = [{"track": {"id": track_id}} for track_id in ids]
+        items = [{"item": {"id": track_id}} for track_id in ids]
         return self._page(items, offset, self._items_page_size)
 
     def current_user_saved_tracks_contains(self, tracks: list[str]) -> list[bool]:
@@ -89,11 +89,11 @@ class FakeSpotify:
     def current_user_saved_tracks_add(self, tracks: list[str]) -> None:
         self.save_calls.append(list(tracks))
 
-    def user_playlist_create(
+    def current_user_playlist_create(
         self,
-        user: str,
         name: str,
         public: bool = True,
+        collaborative: bool = False,
         description: str = "",
     ) -> dict[str, object]:
         self.other_mutations.append(f"create {name}")

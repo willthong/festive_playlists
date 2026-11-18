@@ -2,8 +2,6 @@
 
 from datetime import date
 
-USER_ID = "user-1"
-
 
 class FakeSpotify:
     """Small stand-in for the ``spotipy.Spotify`` playlist operations we use."""
@@ -13,11 +11,6 @@ class FakeSpotify:
         self._public = {playlist_id: True for _, playlist_id in playlists}
         self.create_calls: list[dict[str, object]] = []
         self._next_id = 1
-
-    def me(self) -> dict[str, str]:
-        return {"id": USER_ID}
-
-    current_user = me
 
     def current_user_playlists(
         self,
@@ -36,14 +29,13 @@ class FakeSpotify:
             ),
         }
 
-    def user_playlist_create(
+    def current_user_playlist_create(
         self,
-        user: str,
         name: str,
         public: bool = True,
+        collaborative: bool = False,
         description: str = "",
     ) -> dict[str, object]:
-        assert user == USER_ID, user
         playlist_id = f"created-{self._next_id}"
         self._next_id += 1
         self._playlists.append((name, playlist_id))
