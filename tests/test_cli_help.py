@@ -16,3 +16,11 @@ def test_help_lists_both_run_types_and_dry_run() -> None:
     assert "festive" in result.stdout, result.stdout
     assert "de-festive" in result.stdout, result.stdout
     assert "--dry-run" in result.stdout, result.stdout
+
+
+def test_dry_run_is_accepted_after_subcommand() -> None:
+    from festive_playlists.__main__ import _build_parser
+
+    args = _build_parser().parse_args(["festive", "--dry-run"])
+    assert args.dry_run is True
+    assert args.command == "festive"

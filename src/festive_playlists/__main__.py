@@ -21,14 +21,20 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Show what would be done without making changes.",
     )
     subparsers = parser.add_subparsers(dest="command")
-    subparsers.add_parser(
+    festive = subparsers.add_parser(
         "festive",
         help="Back up Liked Songs and like the Christmas playlist.",
     )
-    subparsers.add_parser(
+    de_festive = subparsers.add_parser(
         "de-festive",
         help="Unlike tracks in the Christmas playlist.",
     )
+    for subparser in (festive, de_festive):
+        subparser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="Show what would be done without making changes.",
+        )
     return parser
 
 
